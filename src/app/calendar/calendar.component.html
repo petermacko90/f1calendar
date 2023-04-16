@@ -1,0 +1,32 @@
+<ng-container *ngIf="{ calendarData: calendarData$ | async } as vm">
+  <h1>
+    F1 Calendar <span>{{ vm.calendarData?.season }}</span>
+  </h1>
+  <table mat-table [dataSource]="vm.calendarData?.dataSource ?? []">
+    <ng-container [matColumnDef]="columns.round">
+      <td class="tr" title="Round" mat-cell *matCellDef="let element">
+        {{ element[columns.round] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns.location">
+      <td title="Location" mat-cell *matCellDef="let element">
+        {{ element[columns.location] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns.date">
+      <td class="tr" title="Date" mat-cell *matCellDef="let element">
+        {{ element[columns.date] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns.time">
+      <td class="tr" title="Time" mat-cell *matCellDef="let element">
+        {{ element[columns.time] }}
+      </td>
+    </ng-container>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      [ngClass]="{ highlight: row.isNext }"
+    ></tr>
+  </table>
+</ng-container>
