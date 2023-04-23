@@ -1,4 +1,30 @@
-table td.tr {
+h1 {
+  padding-left: 1.5rem;
+}
+
+table {
+  width: 100%;
+}
+
+.highlight,
+.mat-mdc-table .highlight.mat-mdc-row:hover {
+  background-color: azure;
+}
+
+tr.detail-row {
+  height: 0;
+}
+
+.detail-row {
+  border-bottom-width: 0;
+}
+
+.race-detail {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.mat-column-date,
+.mat-column-time {
   text-align: right;
-  padding-right: 5px;
 }

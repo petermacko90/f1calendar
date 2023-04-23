@@ -51,11 +51,13 @@ export type ResponseData = {
   MRData: MRData;
 };
 
-type DataSourceItem = {
+export type DataSourceItem = {
   round: string;
   location: string;
   date: string;
   time: string;
+  qualificationDate: string;
+  qualificationTime: string;
   isNext: boolean;
 };
 
@@ -69,4 +71,8 @@ export enum Columns {
   location = 'location',
   date = 'date',
   time = 'time',
+  qualificationDate = 'qualificationDate',
+  qualificationTime = 'qualificationTime',
+  isNext = 'isNext',
+  expand = 'expand',
 }

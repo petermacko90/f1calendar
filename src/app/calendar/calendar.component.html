@@ -2,31 +2,59 @@
   <h1>
     F1 Calendar <span>{{ vm.calendarData?.season }}</span>
   </h1>
-  <table mat-table [dataSource]="vm.calendarData?.dataSource ?? []">
-    <ng-container [matColumnDef]="columns.round">
-      <td class="tr" title="Round" mat-cell *matCellDef="let element">
-        {{ element[columns.round] }}
+
+  <table
+    mat-table
+    [dataSource]="vm.calendarData?.dataSource ?? []"
+    multiTemplateDataRows
+  >
+    <ng-container
+      matColumnDef="{{ column }}"
+      *ngFor="let column of displayedColumns"
+    >
+      <td mat-cell *matCellDef="let race" [title]="column | titlecase">
+        {{ race[column] }}
       </td>
     </ng-container>
-    <ng-container [matColumnDef]="columns.location">
-      <td title="Location" mat-cell *matCellDef="let element">
-        {{ element[columns.location] }}
+
+    <ng-container [matColumnDef]="columns.expand">
+      <td mat-cell *matCellDef="let race">
+        <button
+          mat-icon-button
+          aria-label="expand/collapse row"
+          (click)="toggleRow(race); $event.stopPropagation()"
+        >
+          <mat-icon *ngIf="expandedRace !== race">keyboard_arrow_down</mat-icon>
+          <mat-icon *ngIf="expandedRace === race">keyboard_arrow_up</mat-icon>
+        </button>
       </td>
     </ng-container>
-    <ng-container [matColumnDef]="columns.date">
-      <td class="tr" title="Date" mat-cell *matCellDef="let element">
-        {{ element[columns.date] }}
+
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let race"
+        [attr.colspan]="displayedColumnsWithExpand.length"
+      >
+        <div [@detailExpand]="race === expandedRace ? 'expanded' : 'collapsed'">
+          <div class="race-detail">
+            Qualification: {{ race[columns.qualificationDate] }}
+            {{ race[columns.qualificationTime] }}
+          </div>
+        </div>
       </td>
     </ng-container>
-    <ng-container [matColumnDef]="columns.time">
-      <td class="tr" title="Time" mat-cell *matCellDef="let element">
-        {{ element[columns.time] }}
-      </td>
-    </ng-container>
+
     <tr
       mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ highlight: row.isNext }"
+      *matRowDef="let race; columns: displayedColumnsWithExpand"
+      (click)="toggleRow(race)"
+      [ngClass]="{ highlight: race[columns.isNext] }"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="detail-row"
     ></tr>
   </table>
 </ng-container>

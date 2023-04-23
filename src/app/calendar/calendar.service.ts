@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { CalendarData, Race, ResponseData } from './types';
+import { CalendarData, DataSourceItem, Race, ResponseData } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +17,22 @@ export class CalendarService {
       );
   }
 
-  private getDate(date: string, time?: string) {
+  private getDate(date: string, time?: string): Date {
     return time ? new Date(`${date}T${time}`) : new Date(date);
+  }
+
+  private formatDate(date: string, time?: string): string {
+    return this.getDate(date, time).toLocaleDateString([], {
+      day: 'numeric',
+      month: 'numeric',
+    });
+  }
+
+  private formatTime(date: string, time?: string): string {
+    return this.getDate(date, time).toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
   }
 
   private getNextRace(races: Race[]): string {
@@ -33,19 +47,19 @@ export class CalendarService {
   private convertCalendarData(calendar: Race[]): CalendarData {
     const nextRace = this.getNextRace(calendar);
 
-    const dataSource = calendar.map((race) => ({
+    const dataSource: DataSourceItem[] = calendar.map((race) => ({
       round: `${race.round}.`,
       location: `${race.Circuit.Location.country}, ${race.Circuit.Location.locality}`,
-      date: this.getDate(race.date, race.time).toLocaleDateString([], {
-        day: 'numeric',
-        month: 'numeric',
-      }),
-      time: race.time
-        ? this.getDate(race.date, race.time).toLocaleTimeString([], {
-            hour: 'numeric',
-            minute: '2-digit',
-          })
-        : 'N/A',
+      date: this.formatDate(race.date, race.time),
+      time: race.time ? this.formatTime(race.date, race.time) : 'N/A',
+      qualificationDate: this.formatDate(
+        race.Qualifying.date,
+        race.Qualifying.time
+      ),
+      qualificationTime: this.formatTime(
+        race.Qualifying.date,
+        race.Qualifying.time
+      ),
       isNext: race.round === nextRace,
     }));
 
